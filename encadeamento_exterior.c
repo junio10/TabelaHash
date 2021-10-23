@@ -85,25 +85,32 @@ int insere(int cod_cli, char *nome_cli, char *nome_arquivo_hash, char *nome_arqu
             }
             Cliente *ant;
             if(auxCliente->prox != -1){
-                while(pecorre->prox != -1){
+                while(pecorre->prox != -1 && pecorre->status != LIBERADO){
                     //bota para pegar o anterior
                     ant = pecorre;
                     fseek(arqdados,(pecorre->prox*tamanho_cliente()),SEEK_SET);
                     pecorre = le_cliente(arqdados);
                 }
             }
-            //soma mais um, pq sempre vai cair num null, aí no caso soma com a linha do arquivo atual
-            //pra pegar a proxima linha
-            contLinhas = ant->prox+1;
-            //novo dado inserido
-            fseek(arqdados, ((contLinhas)*tamanho_cliente()),SEEK_SET);
-            novo = cliente(cod_cli,nome_cli,-1,OCUPADO);
-            salva_cliente(novo,arqdados);
-            //mudando parametro do anterior, pegando a linha do anterior dele pra fazer apontar
-            //pro novo
-            fseek(arqdados,((ant->prox)*tamanho_cliente()),SEEK_SET);
-            pecorre->prox = contLinhas;
-            salva_cliente(pecorre,arqdados);
+            if(pecorre->status == LIBERADO){
+               novo = cliente(cod_cli, nome_cli, pecorre->prox, OCUPADO);
+               fseek(arqdados,(ant->prox*tamanho_cliente()),SEEK_SET);
+               salva_cliente(novo, arqdados);
+               contLinhas = ant->prox;
+            }else {
+                //soma mais um, pq sempre vai cair num null, aí no caso soma com a linha do arquivo atual
+                //pra pegar a proxima linha
+                contLinhas = ant->prox + 1;
+                //novo dado inserido
+                fseek(arqdados, ((contLinhas) * tamanho_cliente()), SEEK_SET);
+                novo = cliente(cod_cli, nome_cli, -1, OCUPADO);
+                salva_cliente(novo, arqdados);
+                //mudando parametro do anterior, pegando a linha do anterior dele pra fazer apontar
+                //pro novo
+                fseek(arqdados, ((ant->prox) * tamanho_cliente()), SEEK_SET);
+                pecorre->prox = contLinhas;
+                salva_cliente(pecorre, arqdados);
+            }
         }
     }
     fclose(arqhash);
