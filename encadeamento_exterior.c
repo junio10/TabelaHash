@@ -31,8 +31,45 @@ void cria_hash(char *nome_arquivo_hash, int tam)
 
 int busca(int cod_cli, char *nome_arquivo_hash, char *nome_arquivo_dados)
 {
-	//TODO: Inserir aqui o codigo do algoritmo
-    return INT_MAX;
+	FILE *filehas = fopen(nome_arquivo_hash,"rb");
+	FILE *filedad = fopen(nome_arquivo_dados,"rb");
+	int pos = 0,hash = thash(cod_cli);
+	if (filedad == NULL && filehas == NULL){
+		return -1;
+	}else{
+		Cliente *cli;
+		CompartimentoHash  *aux;
+
+		fseek(filehas,(hash*tamanho_compartimento()),SEEK_SET);
+		aux = le_compartimento(filehas);
+
+		if (aux->prox == -1){
+			return -1;
+		}else{
+			fseek(filedad,(aux->prox*tamanho_cliente()),SEEK_SET);
+			cli = le_cliente(filedad);
+			if (cli->cod_cliente == cod_cli && cli->status == OCUPADO){
+				pos = aux->prox;
+				return pos;
+			}else{
+				
+				while(cli!= NULL){
+					pos++;
+					if (cli->cod_cliente == cod_cli && cli->status == OCUPADO){
+						return pos;
+					}
+					cli = le_cliente(filedad);
+					
+				}
+			}
+		}
+
+	}
+
+	fclose(filehas);
+	fclose(filedad);
+
+    return -1;
 }
 
 
