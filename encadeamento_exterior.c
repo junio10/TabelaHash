@@ -161,7 +161,6 @@ int exclui(int cod_cli, char *nome_arquivo_hash, char *nome_arquivo_dados)
 	//TODO: Inserir aqui o codigo do algoritmo de remocao
 	FILE *dados = fopen(nome_arquivo_dados,"rb+");
 	Cliente *auxcli;
-	CompartimentoHash *auxcompart;
 	int apaga = busca(cod_cli,nome_arquivo_hash,nome_arquivo_dados);
 	if(dados == NULL){
 		return -1;
