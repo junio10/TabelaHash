@@ -163,12 +163,16 @@ int exclui(int cod_cli, char *nome_arquivo_hash, char *nome_arquivo_dados)
 	Cliente *auxcli;
 	CompartimentoHash *auxcompart;
 	int apaga = busca(cod_cli,nome_arquivo_hash,nome_arquivo_dados);
-	fseek(dados,apaga*tamanho_cliente(),SEEK_SET);
-	auxcli = le_cliente(dados);
-	if(cod_cli == auxcli->cod_cliente){
-		auxcli->status = LIBERADO;
+	if(dados == NULL){
+		return -1;
+	}else{
 		fseek(dados,apaga*tamanho_cliente(),SEEK_SET);
-		salva_cliente(auxcli,dados);
+		auxcli = le_cliente(dados);
+		if(cod_cli == auxcli->cod_cliente){
+			auxcli->status = LIBERADO;
+			fseek(dados,apaga*tamanho_cliente(),SEEK_SET);
+			salva_cliente(auxcli,dados);
+		}
 	}
 	fclose(dados);
     return apaga;
