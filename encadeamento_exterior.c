@@ -11,6 +11,9 @@
 
 #include "encadeamento_exterior.h"
 
+int thash (int num){
+	return num % 7;
+}
 
 void cria_hash(char *nome_arquivo_hash, int tam)
 {
