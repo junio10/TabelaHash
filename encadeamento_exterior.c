@@ -33,7 +33,7 @@ int busca(int cod_cli, char *nome_arquivo_hash, char *nome_arquivo_dados)
 {
 	FILE *filehas = fopen(nome_arquivo_hash,"rb");
 	FILE *filedad = fopen(nome_arquivo_dados,"rb");
-	int pos = 0,hash = thash(cod_cli);
+	int pos = 0,hash = cod_cli%7;
 	if (filedad == NULL && filehas == NULL){
 		return -1;
 	}else{
@@ -159,5 +159,17 @@ int insere(int cod_cli, char *nome_cli, char *nome_arquivo_hash, char *nome_arqu
 int exclui(int cod_cli, char *nome_arquivo_hash, char *nome_arquivo_dados)
 {
 	//TODO: Inserir aqui o codigo do algoritmo de remocao
-    return INT_MAX;
+	FILE *dados = fopen(nome_arquivo_dados,"rb+");
+	Cliente *auxcli;
+	CompartimentoHash *auxcompart;
+	int apaga = busca(cod_cli,nome_arquivo_hash,nome_arquivo_dados);
+	fseek(dados,apaga*tamanho_cliente(),SEEK_SET);
+	auxcli = le_cliente(dados);
+	if(cod_cli == auxcli->cod_cliente){
+		auxcli->status = LIBERADO;
+		fseek(dados,apaga*tamanho_cliente(),SEEK_SET);
+		salva_cliente(auxcli,dados);
+	}
+	fclose(dados);
+    return apaga;
 }
